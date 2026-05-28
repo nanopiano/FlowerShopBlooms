@@ -50,3 +50,20 @@ database security in my work.
   demonstrating controlled data access patterns
 - View-based access (loyalroselovers) demonstrates the principle of 
   least privilege at the query level
+
+## Practice SQL With This Database
+
+This is a good hands-on environment to practice SQL. The schema covers 
+real-world scenarios like inventory management, order tracking, and event 
+planning across 12 related tables. You can use it to practice:
+
+- Basic SELECT queries and filtering with WHERE
+- JOIN operations across multiple tables
+- Aggregate functions with GROUP BY and HAVING
+- Subqueries and EXISTS clauses
+- Views and index creation
+- ALTER TABLE and UPDATE operations
+- Cascading deletes and referential integrity behavior
+
+Clone the repo, run schema.sql to set up the database, load data.sql, 
+then start experimenting with queries.sql or write your own.
