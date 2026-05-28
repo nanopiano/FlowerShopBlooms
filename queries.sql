@@ -9,8 +9,9 @@ USE FlowerShopBlooms;
 -- QUERY 1
 -- Lists customers who placed multiple orders
 -- containing roses. Deletes incomplete records
--- with no email. Uses CREATE VIEW, JOIN,
--- GROUP BY, HAVING, DELETE, IN
+-- with no email.
+-- Uses CREATE VIEW, JOIN, GROUP BY, HAVING,
+-- DELETE, IN
 -- ============================================
 
 CREATE VIEW loyalroselovers AS
@@ -120,3 +121,51 @@ AND o.OrderDate >= '2024-01-01'
 GROUP BY c.CustomerID, c.FirstName, c.LastName, c.CustomerStatus
 HAVING TotalSpent > 50
 ORDER BY TotalSpent DESC;
+
+-- Index added after CustomerStatus column exists
+CREATE INDEX idx_CustomerStatus ON CUSTOMER(CustomerStatus);
+
+-- ============================================
+-- RELATIONAL ALGEBRA
+-- ============================================
+
+-- Operation 1:
+-- Count how many different flowers Green Oasis
+-- supplies for each category
+--
+-- γ_CategoryName; COUNT(DISTINCT FlowerID) (
+--     σ_SupplierName = 'Green Oasis' (
+--         SUPPLIER
+--         ⨝ SUPPLIER.SupplierID = FLOWER.SupplierID
+--         ⨝ FLOWER.FlowerID = FLOWER_CATEGORY.FlowerID
+--         ⨝ FLOWER_CATEGORY.CategoryID = CATEGORY.CategoryID
+--     )
+-- )
+--
+-- Joins connect supplier to flower to category.
+-- Filter keeps only Green Oasis rows.
+-- Grouping counts unique FlowerIDs per category.
+
+-- Operation 2:
+-- List all customers who placed an order
+-- containing a flower priced above 12
+--
+-- π_CustomerID, FirstName, LastName (
+--     (CUSTOMER ⋈ ORDER)
+--     ∩
+--     (π_CustomerID, FirstName, LastName (
+--         (CUSTOMER ⋈ ORDER)
+--         WHERE OrderID ∈ (
+--             π_OrderID (
+--                 σ_Price > 12 (
+--                     FLOWER_ORDER ⋈ FLOWER
+--                 )
+--             )
+--         )
+--     ))
+-- )
+--
+-- Joins FLOWER_ORDER and FLOWER, filters Price > 12.
+-- Projects qualifying OrderIDs.
+-- Intersects with full customer order list
+-- to return only matching customers.
